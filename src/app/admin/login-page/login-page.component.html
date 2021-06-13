@@ -1,5 +1,8 @@
 <form class="card" [formGroup]="dataForm" (ngSubmit)="submit()">
   <h2>Войти в панель администратора</h2>
+  <div class="alert alert-danger" *ngIf="authService.error$ | async as error">
+    {{error}}
+  </div>
   <div
     class="form-control"
     [ngClass]="{invalid: dataForm.get('email').touched && dataForm.get('email').invalid}"
@@ -39,7 +42,7 @@
   <button
     type="submit"
     class="btn btn-primary"
-    [disabled]="dataForm.invalid"
+    [disabled]="dataForm.invalid || submitted"
   >
     Войти</button>
 </form>
