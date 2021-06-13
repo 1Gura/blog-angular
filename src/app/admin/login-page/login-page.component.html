@@ -1,0 +1,45 @@
+<form class="card" [formGroup]="dataForm" (ngSubmit)="submit()">
+  <h2>Войти в панель администратора</h2>
+  <div
+    class="form-control"
+    [ngClass]="{invalid: dataForm.get('email').touched && dataForm.get('email').invalid}"
+  >
+    <label for="email">Email</label>
+    <input
+      id="email"
+      type="email"
+      [formControlName]="'email'"
+    >
+    <div
+      class="validation"
+      *ngIf="dataForm.get('email').touched && dataForm.get('email').invalid"
+    >
+      <small *ngIf="dataForm.get('email').errors.required">Поле email обязательно</small>
+      <small *ngIf="dataForm.get('email').errors.pattern">Неккоректное поле email</small>
+    </div>
+  </div>
+  <div
+    class="form-control"
+    [ngClass]="{invalid: dataForm.get('password').touched && dataForm.get('password').invalid}"
+  >
+    <label for="password">Пароль</label>
+    <input
+      id="password"
+      type="password"
+      [formControlName]="'password'"
+    >
+    <div
+      class="validation"
+      *ngIf="dataForm.get('password').touched && dataForm.get('password').invalid"
+    >
+      <small *ngIf="dataForm.get('password').errors.required">Поле пароль обязательно</small>
+      <small *ngIf="dataForm.get('password').errors.pattern">Неккоректное поле пароль</small>
+    </div>
+  </div>
+  <button
+    type="submit"
+    class="btn btn-primary"
+    [disabled]="dataForm.invalid"
+  >
+    Войти</button>
+</form>
