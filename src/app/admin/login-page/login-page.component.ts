@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {LoginFormGroup} from '../form-group/login.form-group';
 import {UserModel} from '../../shared/model/user.model';
 import {AuthService} from '../shared/services/auth.service';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 import {TokenModel} from '../../shared/model/token.model';
 
 @Component({
@@ -13,10 +13,18 @@ import {TokenModel} from '../../shared/model/token.model';
 export class LoginPageComponent implements OnInit {
   public dataForm: LoginFormGroup = new LoginFormGroup();
   public submitted: boolean = false;
-  constructor(public authService: AuthService, private router: Router) {
+  public message: string = '';
+  constructor(public authService: AuthService, private router: Router, private route: ActivatedRoute) {
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
+    this.route.queryParams.subscribe((params: Params)=>{
+      if(params['loginAgain']) {
+        this.message = 'Войдите в личный кабинет'
+      } else if (params['authField']) {
+        this.message = 'Сессия истекла';
+      }
+    })
   }
 
   submit() {
@@ -24,7 +32,9 @@ export class LoginPageComponent implements OnInit {
       return;
     }
     this.submitted = true;
-    const user: UserModel = new UserModel();
+    let user: UserModel = new UserModel();
+    user.email = this.dataForm.value.email;
+    user.password = this.dataForm.value.password;
     this.authService.login(user).subscribe((token: TokenModel) => {
       console.log(token);
       this.dataForm.reset();

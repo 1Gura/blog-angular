@@ -5,7 +5,7 @@ import {Observable, Subject, throwError} from 'rxjs';
 import {catchError, tap} from 'rxjs/operators';
 import {TokenModel} from '../../../shared/model/token.model';
 
-@Injectable()
+@Injectable({providedIn:'root'})
 export class AuthService {
   private prefix = 'https://localhost:44353/api/users';
   public error$: Subject<string> = new Subject<string>();
@@ -36,7 +36,6 @@ export class AuthService {
   }
 
   public isAuthenticated(): boolean {
-    debugger
     return !!this.token;
   }
 
@@ -50,7 +49,7 @@ export class AuthService {
         this.error$.next('Email не найде');
         break;
       default:
-        this.error$.next('Не обработанная ошибка');
+        this.error$.next('Необработанная ошибка');
         break;
     }
     console.log(message);
@@ -59,8 +58,8 @@ export class AuthService {
 
   private setToken(response: TokenModel | null) {
     if(response) {
-      //тут возможно ошибка с утсновкой времени
-      const expDate = new Date(new Date().getDate() + +response.timeLife * 1000);
+      let expDate = new Date();
+      expDate.setMinutes(expDate.getMinutes() + 27)
       localStorage.setItem('fb-token', response.tokenString);
       localStorage.setItem('fb-token-exp', expDate.toString());
     } else {
